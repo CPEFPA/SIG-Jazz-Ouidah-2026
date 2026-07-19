@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIG-JAZZ | Festival International de Jazz de Ouidah 2026</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <style>
+        /* ==========================================
+           RESET & VARIABLES
+        ========================================== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #D4A843;
+            --gold-light: #F0D78C;
+            --gold-dark: #A67C2E;
+            --noir: #0A0A0F;
+            --noir-card: rgba(15, 15, 25, 0.65);
+            --violet: #2D1B69;
+            --violet-light: #6C3CE0;
+            --blanc: #F5F0E8;
+            --blanc-dim: rgba(245, 240, 232, 0.7);
+            --rouge: #E04040;
+            --vert: #34D399;
+            --glass-bg: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--blanc);
+            background: var(--noir);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ==========================================
+           VIDEO BACKGROUND
+        ========================================== */
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .video-bg video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: linear-gradient(
+                180deg,
+                rgba(10, 10, 15, 0.75) 0%,
+                rgba(45, 27, 105, 0.50) 40%,
+                rgba(10, 10, 15, 0.85) 100%
+            );
+        }
+
+        /* ==========================================
+           NAVIGATION
+        ========================================== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 2rem;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10, 10, 15, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            transition: var(--transition);
+        }
+
+        .navbar.scrolled {
+            background: rgba(10, 10, 15, 0.92);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-brand .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .nav-brand span {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--blanc-dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: var(--transition);
+            letter-spacing: 0.3px;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--gold);
+            background: rgba(212, 168, 67, 0.1);
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark)) !important;
+            color: var(--noir) !important;
+            font-weight: 700 !important;
+            padding: 10px 22px !important;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(212, 168, 67, 0.4);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 8px;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background: var(--blanc);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        /* ==========================================
+           HERO SECTION
+        ========================================== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 2rem 80px;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--gold-light);
+            margin-bottom: 2rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--vert);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.8rem, 7vw, 5.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--blanc-dim);
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 4rem;
+            animation: fadeInUp 0.8s ease 0.8s both;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat .number {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--gold);
+        }
+
+        .hero-stat .label {
+            font-size: 0.8rem;
+            color: var(--blanc-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ==========================================
+           BUTTONS
+        ========================================== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--noir);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(212, 168, 67, 0.35);
+        }
+
+        .btn-glass {
+            background: var(--glass-bg);
+            color: var(--blanc);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-glass:hover {
+            background: rgba(255,255,255,0.12);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .btn-sm {
+            padding: 10px 18px;
+            font-size: 0.82rem;
+        }
+
+        .btn-danger {
+            background: rgba(224, 64, 64, 0.15);
+            color: var(--rouge);
+            border: 1px solid rgba(224, 64, 64, 0.3);
+        }
+
+        .btn-success {
+            background: rgba(52, 211, 153, 0.15);
+            color: var(--vert);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+        }
+
+        /* ==========================================
+           SECTIONS
+        ========================================== */
+        .section {
+            padding: 100px 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--blanc-dim);
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        /* ==========================================
+           GLASS CARDS
+        ========================================== */
+        .glass-card {
+            background: var(--noir-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            transition: var(--transition);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(212, 168, 67, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+
+        /* ==========================================
+           MODULES GRID
+        ========================================== */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .module-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card .module-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, rgba(212,168,67,0.15), rgba(212,168,67,0.05));
+            border: 1px solid rgba(212,168,67,0.2);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+            color: var(--gold);
+        }
+
+        .module-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .module-card p {
+            font-size: 0.88rem;
+            color: var(--blanc-dim);
+            line-height: 1.7;
+        }
+
+        .module-card .module-number {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: rgba(255,255,255,0.04);
+            line-height: 1;
+        }
+
+        /* ==========================================
+           INSCRIPTION FORMS
+        ========================================== */
+        .form-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .form-panel {
+            padding: 2.5rem;
+        }
+
+        .form-panel h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-panel .subtitle {
+            color: var(--blanc-dim);
+            font-size: 0.85rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--blanc-dim);
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            color: var(--blanc);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--gold);
+            background: rgba(212, 168, 67, 0.05);
+            box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(245, 240, 232, 0.3);
+        }
+
+        .form-group select option {
+            background: var(--noir);
+            color: var(--blanc);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* ==========================================
+           PLAYLIST TABLE
+        ========================================== */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--radius);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead th {
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gold);
+            border-bottom: 1px solid var(--glass-border);
+            background: rgba(212, 168, 67, 0.05);
+        }
+
+        .data-table tbody td {
+            padding: 14px 16px;
+            font-size: 0.88rem;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            color: var(--blanc-dim);
+        }
+
+        .data-table tbody tr:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-jazz { background: rgba(108, 60, 224, 0.2); color: #A78BFA; }
+        .badge-afro { background: rgba(212, 168, 67, 0.2); color: var(--gold-light); }
+        .badge-blues { background: rgba(59, 130, 246, 0.2); color: #93C5FD; }
+        .badge-funk { background: rgba(52, 211, 153, 0.2); color: var(--vert); }
+
+        /* ==========================================
+           CONTROLE ACCES
+        ========================================== */
+        .scan-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .scan-frame {
+            width: 260px;
+            height: 260px;
+            border: 3px solid var(--gold);
+            border-radius: 24px;
+            position: relative;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(212, 168, 67, 0.03);
+        }
+
+        .scan-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            animation: scanLine 2.5s ease-in-out infinite;
+            border-radius: 24px;
+        }
+
+        .scan-frame i {
+            color: var(--gold);
+            opacity: 0.4;
+        }
+
+        .scan-input-group {
+            display: flex;
+            gap: 0.75rem;
+            max-width: 420px;
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+
+        .scan-input-group input {
+            flex: 1;
+            padding: 14px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            color: var(--blanc);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-align: center;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .scan-input-group input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.1);
+        }
+
+        /* ==========================================
+           DASHBOARD
+        ========================================== */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            padding: 1.75rem;
+            text-align: center;
+        }
+
+        .stat-card .stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--gold);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.78rem;
+            color: var(--blanc-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-card .stat-change {
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+
+        .stat-change.up { color: var(--vert); }
+        .stat-change.down { color: var(--rouge); }
+
+        .chart-placeholder {
+            height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            height: 180px;
+        }
+
+        .chart-bar {
+            width: 40px;
+            border-radius: 6px 6px 0 0;
+            background: linear-gradient(180deg, var(--gold), var(--gold-dark));
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .chart-bar:hover {
+            opacity: 0.8;
+        }
+
+        .chart-bar .bar-label {
+            position: absolute;
+            bottom: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            color: var(--blanc-dim);
+            white-space: nowrap;
+        }
+
+        .charts-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* ==========================================
+           FOOTER
+        ========================================== */
+        .footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--glass-border);
+            margin-top: 4rem;
+        }
+
+        .footer p {
+            color: var(--blanc-dim);
+            font-size: 0.82rem;
+        }
+
+        .footer .footer-brand {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        /* ==========================================
+           MODAL
+        ========================================== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: rgba(20, 20, 35, 0.95);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            animation: modalIn 0.3s ease;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--blanc-dim);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .modal h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .success-icon {
+            width: 72px;
+            height: 72px;
+            background: rgba(52, 211, 153, 0.1);
+            border: 2px solid var(--vert);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--vert);
+        }
+
+        /* ==========================================
+           ANIMATIONS
+        ========================================== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        @keyframes scanLine {
+            0% { top: 0; }
+            50% { top: calc(100% - 3px); }
+            100% { top: 0; }
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ==========================================
+           RESPONSIVE
+        ========================================== */
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 72px;
+                left: 0;
+                right: 0;
+                background: rgba(10,10,15,0.97);
+                backdrop-filter: blur(20px);
+                padding: 1.5rem;
+                border-bottom: 1px solid var(--glass-border);
+            }
+            .form-container { grid-template-columns: 1fr; }
+            .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+            .charts-row { grid-template-columns: 1fr; }
+            .hero-stats { gap: 1.5rem; }
+        }
+
+        @media (max-width: 500px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .hero-stats { flex-direction: column; gap: 1rem; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+
+        /* ==========================================
+           SCROLLBAR
+        ========================================== */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--noir); }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold-dark);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ====== VIDEO BACKGROUND ====== -->
+    <div class="video-bg">
+        <video autoplay muted loop playsinline>
+            <!-- REMPLACE le src par ta vidéo locale -->
+            <source src="assets/videos/background.mp4" type="video/mp4">
+            <!-- Fallback en ligne si pas de vidéo locale -->
+            <source src="https://videos.pexels.com/video-files/3209237/3209237-uhd_2560_1440_25fps.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="video-overlay"></div>
+
+    <!-- ====== NAVIGATION ====== -->
+    <nav class="navbar" id="navbar">
+        <a href="#hero" class="nav-brand">
+            <div class="logo-icon">🎷</div>
+            <span>SIG-JAZZ</span>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#modules" class="active">Modules</a></li>
+            <li><a href="#inscription">Inscription</a></li>
+            <li><a href="#playlists">Playlists</a></li>
+            <li><a href="#acces">Contrôle</a></li>
+            <li><a href="#dashboard">Dashboard</a></li>
+            <li><a href="#inscription" class="nav-cta">S'inscrire</a></li>
+        </ul>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- ====== HERO ====== -->
+    <section class="hero" id="hero">
+        <div class="hero-badge">
+            <span class="dot"></span>
+            Inscriptions ouvertes — Édition 2026
+        </div>
+        <h1>
+            Festival International<br>
+            de <span class="highlight">Jazz de Ouidah</span>
+        </h1>
+        <p>
+            Plateforme numérique intégrée pour l'inscription, la programmation
+            et le contrôle d'accès du plus grand rendez-vous jazz du Bénin.
+        </p>
+        <div class="hero-buttons">
+            <a href="#inscription" class="btn btn-primary">
+                <i data-lucide="ticket"></i> S'inscrire maintenant
+            </a>
+            <a href="#modules" class="btn btn-glass">
+                <i data-lucide="layout-grid"></i> Découvrir les modules
+            </a>
+        </div>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="number" id="countArtists">0</div>
+                <div class="label">Artistes</div>
+            </div>
+            <div class="hero-stat">
+                <div class="number" id="countFestivaliers">0</div>
+                <div class="label">Festivaliers</div>
+            </div>
+            <div class="hero-stat">
+                <div class="number" id="countConcerts">0</div>
+                <div class="label">Concerts</div>
+            </div>
+            <div class="hero-stat">
+                <div class="number" id="countJours">3</div>
+                <div class="label">Jours</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== MODULES ====== -->
+    <section class="section" id="modules">
+        <div class="section-header fade-in">
+            <span class="section-tag">Architecture</span>
+            <h2>Modules du Système</h2>
+            <p>Six modules interconnectés pour une gestion complète du festival.</p>
+        </div>
+        <div class="modules-grid">
+            <div class="glass-card module-card fade-in">
+                <span class="module-number">01</span>
+                <div class="module-icon"><i data-lucide="user-plus"></i></div>
+                <h3>Inscription</h3>
+                <p>Enregistrement en ligne des festivaliers et artistes avec génération automatique de QR Code unique.</p>
+            </div>
+            <div class="glass-card module-card fade-in">
+                <span class="module-number">02</span>
+                <div class="module-icon"><i data-lucide="music-2"></i></div>
+                <h3>Playlists</h3>
+                <p>Registre numérique des morceaux, compositeurs, durées et ordre de passage de chaque artiste.</p>
+            </div>
+            <div class="glass-card module-card fade-in">
+                <span class="module-number">03</span>
+                <div class="module-icon"><i data-lucide="credit-card"></i></div>
+                <h3>Cartes d'Invitation</h3>
+                <p>Génération automatique de cartes PDF personnalisées avec QR Code depuis un template.</p>
+            </div>
+            <div class="glass-card module-card fade-in">
+                <span class="module-number">04</span>
+                <div class="module-icon"><i data-lucide="scan-line"></i></div>
+                <h3>Contrôle d'Accès</h3>
+                <p>Scan QR Code ou recherche par numéro. Anti-fraude avec validation en temps réel.</p>
+            </div>
+            <div class="glass-card module-card fade-in">
+                <span class="module-number">05</span>
+                <div class="module-icon"><i data-lucide="database"></i></div>
+                <h3>Base de Données</h3>
+                <p>Centralisation sur Google Drive avec rotation automatique des bases journalières.</p>
+            </div>
+            <div class="glass-card module-card fade-in">
+                <span class="module-number">06</span>
+                <div class="module-icon"><i data-lucide="bar-chart-3"></i></div>
+                <h3>Dashboard</h3>
+                <p>Tableaux de bord dynamiques Looker Studio avec rapports journaliers et globaux.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== INSCRIPTION ====== -->
+    <section class="section" id="inscription">
+        <div class="section-header fade-in">
+            <span class="section-tag">Module 01</span>
+            <h2>Inscription en Ligne</h2>
+            <p>Choisissez votre profil pour rejoindre le festival.</p>
+        </div>
+        <div class="form-container fade-in">
+            <!-- FESTIVALIER -->
+            <div class="glass-card form-panel">
+                <h3>🎫 Festivalier</h3>
+                <p class="subtitle">Accédez à tous les concerts et animations.</p>
+                <form id="formFestivalier" onsubmit="return handleInscription(event, 'festivalier')">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nom</label>
+                            <input type="text" placeholder="AGOSSOU" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Prénom</label>
+                            <input type="text" placeholder="Koffi" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" placeholder="koffi@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Téléphone</label>
+                        <input type="tel" placeholder="+229 XX XX XX XX" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Pays</label>
+                            <select required>
+                                <option value="">Sélectionner</option>
+                                <option>Bénin</option>
+                                <option>Togo</option>
+                                <option>Nigeria</option>
+                                <option>Ghana</option>
+                                <option>Côte d'Ivoire</option>
+                                <option>Sénégal</option>
+                                <option>France</option>
+                                <option>USA</option>
+                                <option>Autre</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Catégorie</label>
+                            <select required>
+                                <option value="">Sélectionner</option>
+                                <option>Public Général</option>
+                                <option>VIP</option>
+                                <option>Presse</option>
+                                <option>Étudiant</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:0.5rem;">
+                        <i data-lucide="send"></i> Valider l'inscription
+                    </button>
+                </form>
+            </div>
+
+            <!-- ARTISTE -->
+            <div class="glass-card form-panel">
+                <h3>🎸 Artiste / Groupe</h3>
+                <p class="subtitle">Déposez votre dossier de candidature.</p>
+                <form id="formArtiste" onsubmit="return handleInscription(event, 'artiste')">
+                    <div class="form-group">
+                        <label>Nom de scène / Groupe</label>
+                        <input type="text" placeholder="The Ouidah Jazz Collective" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Représentant</label>
+                            <input type="text" placeholder="Nom complet" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Téléphone</label>
+                            <input type="tel" placeholder="+229 XX XX XX XX" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Genre principal</label>
+                            <select required>
+                                <option value="">Sélectionner</option>
+                                <option>Jazz Classique</option>
+                                <option>Afro-Jazz</option>
+                                <option>Jazz Fusion</option>
+                                <option>Blues</option>
+                                <option>Funk / Soul</option>
+                                <option>World Music</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre de membres</label>
+                            <input type="number" min="1" max="30" placeholder="5" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Instruments / Voix</label>
+                        <input type="text" placeholder="Saxophone, Piano, Batterie, Voix...">
+                    </div>
+                    <div class="form-group">
+                        <label>Durée de prestation (min)</label>
+                        <input type="number" min="15" max="120" placeholder="45" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Besoins techniques</label>
+                        <textarea placeholder="Retours scène, piano à queue, DI box..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:0.5rem;">
+                        <i data-lucide="upload-cloud"></i> Soumettre le dossier
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== PLAYLISTS ====== -->
+    <section class="section" id="playlists">
+        <div class="section-header fade-in">
+            <span class="section-tag">Module 02</span>
+            <h2>Registre des Playlists</h2>
+            <p>Programmation musicale des artistes confirmés.</p>
+        </div>
+        <div class="glass-card fade-in" style="padding:0; overflow:hidden;">
+            <div style="padding:1.5rem 2rem; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--glass-border);">
+                <div>
+                    <h3 style="font-family:'Playfair Display',serif; font-size:1.2rem;">Setlist — The Ouidah Jazz Collective</h3>
+                    <p style="font-size:0.8rem; color:var(--blanc-dim);">Scène Plage • Jour 1 • 21h00</p>
+                </div>
+                <button class="btn btn-glass btn-sm">
+                    <i data-lucide="plus"></i> Ajouter un morceau
+                </button>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Titre</th>
+                            <th>Compositeur</th>
+                            <th>Genre</th>
+                            <th>Durée</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="color:var(--gold); font-weight:700;">01</td>
+                            <td style="color:var(--blanc);">Porto-Novo Sunrise</td>
+                            <td>A. Gandonou</td>
+                            <td><span class="badge badge-afro">Afro-Jazz</span></td>
+                            <td>6:30</td>
+                            <td style="color:var(--vert);">✓ Confirmé</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--gold); font-weight:700;">02</td>
+                            <td style="color:var(--blanc);">Route des Esclaves</td>
+                            <td>M. Zinsou</td>
+                            <td><span class="badge badge-jazz">Jazz</span></td>
+                            <td>8:15</td>
+                            <td style="color:var(--vert);">✓ Confirmé</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--gold); font-weight:700;">03</td>
+                            <td style="color:var(--blanc);">Vodun Groove</td>
+                            <td>A. Gandonou</td>
+                            <td><span class="badge badge-funk">Funk</span></td>
+                            <td>5:45</td>
+                            <td style="color:var(--vert);">✓ Confirmé</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--gold); font-weight:700;">04</td>
+                            <td style="color:var(--blanc);">Midnight in Cotonou</td>
+                            <td>S. Kpadonou</td>
+                            <td><span class="badge badge-blues">Blues</span></td>
+                            <td>7:00</td>
+                            <td style="color:var(--gold);">⏳ En attente</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--gold); font-weight:700;">05</td>
+                            <td style="color:var(--blanc);">Ouidah Reborn</td>
+                            <td>Collectif</td>
+                            <td><span class="badge badge-afro">Afro-Jazz</span></td>
+                            <td>10:20</td>
+                            <td style="color:var(--vert);">✓ Confirmé</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="padding:1rem 2rem; border-top:1px solid var(--glass-border); display:flex; justify-content:space-between; font-size:0.82rem; color:var(--blanc-dim);">
+                <span>5 morceaux</span>
+                <span>Durée totale : <strong style="color:var(--gold);">37 min 50s</strong> / 45 min</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== CONTROLE D'ACCES ====== -->
+    <section class="section" id="acces">
+        <div class="section-header fade-in">
+            <span class="section-tag">Module 04</span>
+            <h2>Contrôle d'Accès</h2>
+            <p>Scannez le QR Code ou saisissez le numéro d'invitation.</p>
+        </div>
+        <div class="glass-card scan-zone fade-in">
+            <div class="scan-frame">
+                <i data-lucide="scan" style="width:80px; height:80px;"></i>
+            </div>
+            <h3 style="font-family:'Playfair Display',serif; font-size:1.3rem; margin-bottom:0.5rem;">
+                Scanner un billet
+            </h3>
+            <p style="color:var(--blanc-dim); font-size:0.88rem;">
+                Placez le QR Code devant la caméra ou entrez le code manuellement.
+            </p>
+            <div class="scan-input-group">
+                <input type="text" id="scanInput" placeholder="JAZZ-2026-XXXXX" maxlength="16">
+                <button class="btn btn-primary" onclick="validateTicket()">
+                    <i data-lucide="check-circle"></i> Valider
+                </button>
+            </div>
+            <div id="scanResult" style="margin-top:1.5rem;"></div>
+        </div>
+    </section>
+
+    <!-- ====== DASHBOARD ====== -->
+    <section class="section" id="dashboard">
+        <div class="section-header fade-in">
+            <span class="section-tag">Module 06</span>
+            <h2>Tableau de Bord</h2>
+            <p>Données en temps réel du festival.</p>
+        </div>
+
+        <div class="dashboard-grid fade-in">
+            <div class="glass-card stat-card">
+                <div class="stat-value">2,847</div>
+                <div class="stat-label">Inscrits Total</div>
+                <div class="stat-change up">↑ +12% vs hier</div>
+            </div>
+            <div class="glass-card stat-card">
+                <div class="stat-value">1,923</div>
+                <div class="stat-label">Présents</div>
+                <div class="stat-change up">↑ 67.5% taux</div>
+            </div>
+            <div class="glass-card stat-card">
+                <div class="stat-value">42</div>
+                <div class="stat-label">Artistes</div>
+                <div class="stat-change up">↑ 8 groupes</div>
+            </div>
+            <div class="glass-card stat-card">
+                <div class="stat-value">156</div>
+                <div class="stat-label">Morceaux</div>
+                <div class="stat-change up">↑ 12h de live</div>
+            </div>
+        </div>
+
+        <div class="charts-row fade-in">
+            <div class="glass-card">
+                <h3 style="font-family:'Playfair Display',serif; font-size:1.1rem; margin-bottom:1.5rem;">
+                    Affluence par jour
+                </h3>
+                <div class="chart-placeholder">
+                    <div class="chart-bars">
+                        <div class="chart-bar" style="height:60%;">
+                            <span class="bar-label">Jour 1</span>
+                        </div>
+                        <div class="chart-bar" style="height:85%;">
+                            <span class="bar-label">Jour 2</span>
+                        </div>
+                        <div class="chart-bar" style="height:100%;">
+                            <span class="bar-label">Jour 3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-card">
+                <h3 style="font-family:'Playfair Display',serif; font-size:1.1rem; margin-bottom:1.5rem;">
+                    Répartition
+                </h3>
+                <div style="display:flex; flex-direction:column; gap:1rem; padding-top:0.5rem;">
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:4px;">
+                            <span>Public Général</span><span style="color:var(--gold);">68%</span>
+                        </div>
+                        <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:3px;">
+                            <div style="width:68%; height:100%; background:var(--gold); border-radius:3px;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:4px;">
+                            <span>VIP</span><span style="color:var(--violet-light);">15%</span>
+                        </div>
+                        <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:3px;">
+                            <div style="width:15%; height:100%; background:var(--violet-light); border-radius:3px;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:4px;">
+                            <span>Presse</span><span style="color:var(--vert);">9%</span>
+                        </div>
+                        <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:3px;">
+                            <div style="width:9%; height:100%; background:var(--vert); border-radius:3px;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:4px;">
+                            <span>Étudiants</span><span style="color:#93C5FD;">8%</span>
+                        </div>
+                        <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:3px;">
+                            <div style="width:8%; height:100%; background:#93C5FD; border-radius:3px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="footer">
+        <p>
+            <span class="footer-brand">SIG-JAZZ</span> — Festival International de Jazz de Ouidah 2026<br>
+            Ville de Ouidah • OBG International • Tous droits réservés
+        </p>
+    </footer>
+
+    <!-- ====== MODAL SUCCÈS ====== -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal()">
+                <i data-lucide="x"></i>
+            </button>
+            <div class="success-icon">
+                <i data-lucide="check" style="width:32px; height:32px;"></i>
+            </div>
+            <h3 style="text-align:center;">Inscription Réussie !</h3>
+            <p style="text-align:center; color:var(--blanc-dim); margin-bottom:1rem;" id="modalMessage">
+                Votre numéro d'invitation a été généré.
+            </p>
+            <div style="text-align:center; background:rgba(212,168,67,0.08); border:1px dashed var(--gold); border-radius:var(--radius-sm); padding:1rem; margin-bottom:1.5rem;">
+                <p style="font-size:0.72rem; text-transform:uppercase; letter-spacing:2px; color:var(--blanc-dim); margin-bottom:4px;">Numéro d'invitation</p>
+                <p style="font-family:'JetBrains Mono',monospace; font-size:1.4rem; color:var(--gold); font-weight:700;" id="modalCode">JAZZ-2026-78432</p>
+            </div>
+            <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="closeModal()">
+                <i data-lucide="download"></i> Télécharger ma carte
+            </button>
+        </div>
+    </div>
+
+    <!-- ====== JAVASCRIPT ====== -->
+    <script>
+        // Init Lucide Icons
+        lucide.createIcons();
+
+        // ---- NAVBAR SCROLL ----
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // ---- HAMBURGER ----
+        document.getElementById('hamburger').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('open');
+        });
+
+        // Close mobile menu on link click
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navLinks').classList.remove('open');
+            });
+        });
+
+        // ---- ACTIVE NAV LINK ----
+        const sections = document.querySelectorAll('section[id]');
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY + 100;
+            sections.forEach(section => {
+                const top = section.offsetTop;
+                const height = section.offsetHeight;
+                const id = section.getAttribute('id');
+                const link = document.querySelector(`.nav-links a[href="#${id}"]`);
+                if (link) {
+                    link.classList.toggle('active', scrollY >= top && scrollY < top + height);
+                }
+            });
+        });
+
+        // ---- FADE IN ON SCROLL ----
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // ---- COUNTER ANIMATION ----
+        function animateCounter(el, target, duration = 2000) {
+            let start = 0;
+            const step = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += step;
+                if (start >= target) {
+                    el.textContent = target.toLocaleString();
+                    clearInterval(timer);
+                } else {
+                    el.textContent = Math.floor(start).toLocaleString();
+                }
+            }, 16);
+        }
+
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(document.getElementById('countArtists'), 42);
+                    animateCounter(document.getElementById('countFestivaliers'), 2847);
+                    animateCounter(document.getElementById('countConcerts'), 18);
+                    counterObserver.disconnect();
+                }
+            });
+        }, { threshold: 0.5 });
+
+        counterObserver.observe(document.querySelector('.hero-stats'));
+
+        // ---- INSCRIPTION HANDLER ----
+        function handleInscription(e, type) {
+            e.preventDefault();
+            const code = 'JAZZ-2026-' + Math.floor(10000 + Math.random() * 90000);
+            document.getElementById('modalCode').textContent = code;
+            document.getElementById('modalMessage').textContent =
+                type === 'artiste'
+                    ? 'Votre dossier artiste a été soumis avec succès.'
+                    : 'Votre inscription festivalier est confirmée.';
+            document.getElementById('successModal').classList.add('active');
+            e.target.reset();
+            return false;
+        }
+
+        // ---- MODAL ----
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        document.getElementById('successModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeModal();
+        });
+
+        // ---- SCAN TICKET ----
+        function validateTicket() {
+            const input = document.getElementById('scanInput').value.trim();
+            const result = document.getElementById('scanResult');
+
+            if (!input) {
+                result.innerHTML = `
+                    <div style="padding:1rem; background:rgba(224,64,64,0.1); border:1px solid rgba(224,64,64,0.3); border-radius:var(--radius-sm); color:var(--rouge); font-size:0.88rem;">
+                        ⚠ Veuillez entrer un numéro d'invitation.
+                    </div>`;
+                return;
+            }
+
+            // Simulation
+            const isValid = input.startsWith('JAZZ');
+            if (isValid) {
+                result.innerHTML = `
+                    <div style="padding:1.25rem; background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.3); border-radius:var(--radius-sm);">
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                            <span style="color:var(--vert); font-size:1.3rem;">✓</span>
+                            <strong style="color:var(--vert); font-size:1rem;">Accès Autorisé</strong>
+                        </div>
+                        <p style="font-size:0.82rem; color:var(--blanc-dim);">
+                            <strong style="color:var(--blanc);">AGOSSOU Koffi</strong> — Public Général<br>
+                            Entrée : ${new Date().toLocaleTimeString('fr-FR')} • Scan QR
+                        </p>
+                    </div>`;
+            } else {
+                result.innerHTML = `
+                    <div style="padding:1.25rem; background:rgba(224,64,64,0.08); border:1px solid rgba(224,64,64,0.3); border-radius:var(--radius-sm);">
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                            <span style="color:var(--rouge); font-size:1.3rem;">✕</span>
+                            <strong style="color:var(--rouge); font-size:1rem;">Billet Invalide</strong>
+                        </div>
+                        <p style="font-size:0.82rem; color:var(--blanc-dim);">
+                            Ce numéro n'existe pas dans la base de données ou a déjà été utilisé.
+                        </p>
+                    </div>`;
+            }
+        }
+
+        // Enter key for scan
+        document.getElementById('scanInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') validateTicket();
+        });
+    </script>
+
+</body>
+</html>
