@@ -1451,22 +1451,80 @@
         }, { threshold: 0.5 });
 
         counterObserver.observe(document.querySelector('.hero-stats'));
+// ==========================================
+// ---- INSCRIPTION HANDLER (Connecté à Google Sheets) ----
+// ==========================================
+async function handleInscription(e, type) {
+    e.preventDefault();
+    
+    const form = e.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.innerHTML;
 
-        // ---- INSCRIPTION HANDLER ----
-        function handleInscription(e, type) {
-            e.preventDefault();
-            const code = 'JAZZ-2026-' + Math.floor(10000 + Math.random() * 90000);
-            document.getElementById('modalCode').textContent = code;
-            document.getElementById('modalMessage').textContent =
-                type === 'artiste'
-                    ? 'Votre dossier artiste a été soumis avec succès.'
-                    : 'Votre inscription festivalier est confirmée.';
-            document.getElementById('successModal').classList.add('active');
-            e.target.reset();
-            return false;
-        }
+    // 1. État de chargement (feedback utilisateur)
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '⏳ Envoi en cours...';
 
-        // ---- MODAL ----
+    // 2. Préparation des données
+    let data = { type: type };
+
+    if (type === 'festivalier') {
+        const selects = form.querySelectorAll('select');
+        data.nom = form.querySelector('input[placeholder="AGOSSOU"]').value;
+        data.prenom = form.querySelector('input[placeholder="Koffi"]').value;
+        data.email = form.querySelector('input[type="email"]').value;
+        data.telephone = form.querySelector('input[type="tel"]').value;
+        data.pays = selects[0].value;
+        data.categorie = selects[1].value;
+    } else if (type === 'artiste') {
+        const inputsNumber = form.querySelectorAll('input[type="number"]');
+        data.nomGroupe = form.querySelector('input[placeholder="The Ouidah Jazz Collective"]').value;
+        data.representant = form.querySelector('input[placeholder="Nom complet"]').value;
+        data.telephone = form.querySelector('input[type="tel"]').value;
+        data.genre = form.querySelector('select').value;
+        data.membres = inputsNumber[0].value;
+        data.instruments = form.querySelector('input[placeholder="Saxophone, Piano, Batterie, Voix..."]').value;
+        data.duree = inputsNumber[1].value;
+        data.besoins = form.querySelector('textarea').value;
+    }
+
+    // 3. Envoi vers Google Apps Script
+    try {
+        await fetch('https://script.google.com/macros/s/AKfycbw2ZkN_kOxat8VdeK2gg5RaxSVmW1X_HtdJnuJJVtJ4N_TxRhE4X8rqbKzHFP88ooFynw/exec', {
+            method: 'POST',
+            mode: 'no-cors', // Indispensable pour éviter les blocages CORS de Google
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8' // Astuce pour contourner le preflight CORS
+            },
+            body: JSON.stringify(data)
+        });
+
+        // 4. Succès : Génération du code et affichage du modal
+        const code = 'JAZZ-2026-' + Math.floor(10000 + Math.random() * 90000);
+        document.getElementById('modalCode').textContent = code;
+        document.getElementById('modalMessage').textContent =
+            type === 'artiste'
+                ? 'Votre dossier artiste a été soumis avec succès et enregistré dans notre base de données.'
+                : 'Votre inscription festivalier est confirmée et enregistrée.';
+
+        document.getElementById('successModal').classList.add('active');
+        form.reset(); // Vider le formulaire
+
+    } catch (error) {
+        console.error('Erreur:', error);
+        alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
+    } finally {
+        // 5. Rétablir le bouton à son état initial
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+        if (window.lucide) lucide.createIcons();
+    }
+
+    return false;
+}   
+
+    
+              // ---- MODAL ----
         function closeModal() {
             document.getElementById('successModal').classList.remove('active');
         }
