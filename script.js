@@ -71,7 +71,7 @@ const counterObserver = new IntersectionObserver((entries) => {
 counterObserver.observe(document.querySelector('.hero-stats'));
 
 // ==========================================
-// ---- INSCRIPTION + PDF + QR CODE ----
+// ---- INSCRIPTION + PDF + QR CODE (VERSION STABLE) ----
 // ==========================================
 async function handleInscription(e, type) {
     e.preventDefault();
@@ -114,7 +114,7 @@ async function handleInscription(e, type) {
 
         const invitationCode = 'JAZZ-2026-' + Math.floor(10000 + Math.random() * 90000);
 
-        // Envoi à Google Sheets
+        // 1. Envoi à Google Sheets
         await fetch('https://script.google.com/macros/s/AKfycbw2ZkN_kOxat8VdeK2gg5RaxSVmW1X_HtdJnuJJVtJ4N_TxRhE4X8rqbKzHFP88ooFynw/exec', {
             method: 'POST',
             mode: 'no-cors',
@@ -122,17 +122,35 @@ async function handleInscription(e, type) {
             body: JSON.stringify({ ...data, code: invitationCode })
         });
 
-        // Génération du QR Code
-        const qrCanvas = document.createElement('canvas');
-        await QRCode.toCanvas(qrCanvas, invitationCode, { width: 256, margin: 1 });
-        const qrImage = qrCanvas.toDataURL('image/png');
+        // 2. Génération du QR Code (Méthode stable avec qrcodejs)
+        const tempDiv = document.createElement('div');
+        tempDiv.style.display = 'none';
+        document.body.appendChild(tempDiv);
 
-        // Création du PDF
+        new QRCode(tempDiv, {
+            text: invitationCode,
+            width: 256,
+            height: 256,
+            colorDark: "#0A0A0F",
+            colorLight: "#FFFFFF",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+
+        // Petite pause pour laisser le temps au navigateur de dessiner le canvas
+        await new Promise(resolve => setTimeout(resolve, 150));
+        
+        const qrElement = tempDiv.querySelector('canvas') || tempDiv.querySelector('img');
+        const qrImage = qrElement.tagName === 'CANVAS' ? qrElement.toDataURL('image/png') : qrElement.src;
+        
+        document.body.removeChild(tempDiv);
+
+        // 3. Création du PDF
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [100, 60] });
 
         doc.setFillColor(10, 10, 15);
         doc.rect(0, 0, 100, 60, 'F');
+        
         doc.setDrawColor(212, 168, 67);
         doc.setLineWidth(0.5);
         doc.rect(2, 2, 96, 56);
@@ -158,10 +176,11 @@ async function handleInscription(e, type) {
         doc.setTextColor(245, 240, 232);
         doc.text(invitationCode, 50, 57, { align: 'center' });
 
+        // 4. Téléchargement
         const fileName = `Carte_${participantName.replace(/\s+/g, '_')}_${invitationCode}.pdf`;
         doc.save(fileName);
 
-        // Modal de succès
+        // 5. Modal de succès
         document.getElementById('modalCode').textContent = invitationCode;
         document.getElementById('modalMessage').textContent =
             type === 'artiste'
