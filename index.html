@@ -1462,6 +1462,9 @@
 // ==========================================
 // ---- INSCRIPTION + GÉNÉRATION PDF + QR CODE ----
 // ==========================================
+// ==========================================
+// ---- INSCRIPTION + PDF + QR CODE (VERSION SIMPLIFIÉE) ----
+// ==========================================
 async function handleInscription(e, type) {
     e.preventDefault();
     
@@ -1469,50 +1472,43 @@ async function handleInscription(e, type) {
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalBtnText = submitBtn.innerHTML;
 
-    // 1. État de chargement
     submitBtn.disabled = true;
-    submitBtn.innerHTML = '⏳ Génération de votre carte...';
+    submitBtn.innerHTML = '⏳ Génération en cours...';
 
-    // 2. Préparation des données
-    let data = { type: type };
-    let participantName = '';
-    let participantCategory = '';
-
-    if (type === 'festivalier') {
-        const selects = form.querySelectorAll('select');
-        data.nom = form.querySelector('input[placeholder="AGOSSOU"]').value;
-        data.prenom = form.querySelector('input[placeholder="Koffi"]').value;
-        data.email = form.querySelector('input[type="email"]').value;
-        data.telephone = form.querySelector('input[type="tel"]').value;
-        data.pays = selects[0].value;
-        data.categorie = selects[1].value;
-        participantName = `${data.prenom} ${data.nom}`;
-        participantCategory = data.categorie;
-    } else if (type === 'artiste') {
-        const inputsNumber = form.querySelectorAll('input[type="number"]');
-        data.nomGroupe = form.querySelector('input[placeholder="The Ouidah Jazz Collective"]').value;
-        data.representant = form.querySelector('input[placeholder="Nom complet"]').value;
-        data.telephone = form.querySelector('input[type="tel"]').value;
-        data.genre = form.querySelector('select').value;
-        data.membres = inputsNumber[0].value;
-        data.instruments = form.querySelector('input[placeholder="Saxophone, Piano, Batterie, Voix..."]').value;
-        data.duree = inputsNumber[1].value;
-        data.besoins = form.querySelector('textarea').value;
-        participantName = data.nomGroupe;
-        participantCategory = 'Artiste';
-    }
-
-    // 3. Générer le code unique et le QR Code
-    const invitationCode = 'JAZZ-2026-' + Math.floor(10000 + Math.random() * 90000);
-    const qrData = JSON.stringify({
-        code: invitationCode,
-        name: participantName,
-        type: type,
-        category: participantCategory
-    });
-
-    // 4. Envoyer à Google Sheets
     try {
+        // 1. Récupérer les données
+        let participantName = '';
+        let participantCategory = '';
+        let data = { type: type };
+
+        if (type === 'festivalier') {
+            const selects = form.querySelectorAll('select');
+            data.nom = form.querySelector('input[placeholder="AGOSSOU"]').value;
+            data.prenom = form.querySelector('input[placeholder="Koffi"]').value;
+            data.email = form.querySelector('input[type="email"]').value;
+            data.telephone = form.querySelector('input[type="tel"]').value;
+            data.pays = selects[0].value;
+            data.categorie = selects[1].value;
+            participantName = `${data.prenom} ${data.nom}`;
+            participantCategory = data.categorie;
+        } else if (type === 'artiste') {
+            const inputsNumber = form.querySelectorAll('input[type="number"]');
+            data.nomGroupe = form.querySelector('input[placeholder="The Ouidah Jazz Collective"]').value;
+            data.representant = form.querySelector('input[placeholder="Nom complet"]').value;
+            data.telephone = form.querySelector('input[type="tel"]').value;
+            data.genre = form.querySelector('select').value;
+            data.membres = inputsNumber[0].value;
+            data.instruments = form.querySelector('input[placeholder="Saxophone, Piano, Batterie, Voix..."]').value;
+            data.duree = inputsNumber[1].value;
+            data.besoins = form.querySelector('textarea').value;
+            participantName = data.nomGroupe;
+            participantCategory = 'Artiste';
+        }
+
+        // 2. Générer le code unique
+        const invitationCode = 'JAZZ-2026-' + Math.floor(10000 + Math.random() * 90000);
+
+        // 3. Envoyer à Google Sheets
         await fetch('https://script.google.com/macros/s/AKfycbw2ZkN_kOxat8VdeK2gg5RaxSVmW1X_HtdJnuJJVtJ4N_TxRhE4X8rqbKzHFP88ooFynw/exec', {
             method: 'POST',
             mode: 'no-cors',
@@ -1520,21 +1516,20 @@ async function handleInscription(e, type) {
             body: JSON.stringify({ ...data, code: invitationCode })
         });
 
-        // 5. Générer le QR Code en image
+        // 4. Générer le QR Code
         const qrCanvas = document.createElement('canvas');
-        await QRCode.toCanvas(qrCanvas, qrData, {
-            width: 300,
-            margin: 2,
-            color: { dark: '#0A0A0F', light: '#FFFFFF' }
+        await QRCode.toCanvas(qrCanvas, invitationCode, {
+            width: 256,
+            margin: 1
         });
         const qrImage = qrCanvas.toDataURL('image/png');
 
-        // 6. Générer le PDF de la carte
+        // 5. Créer le PDF
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({
             orientation: 'landscape',
             unit: 'mm',
-            format: [100, 60] // Format carte de visite
+            format: [100, 60]
         });
 
         // Fond noir
@@ -1543,18 +1538,18 @@ async function handleInscription(e, type) {
 
         // Bordure dorée
         doc.setDrawColor(212, 168, 67);
-        doc.setLineWidth(1);
+        doc.setLineWidth(0.5);
         doc.rect(2, 2, 96, 56);
 
         // Titre
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(10);
+        doc.setFontSize(9);
         doc.setTextColor(212, 168, 67);
-        doc.text('FESTIVAL INTERNATIONAL', 50, 8, { align: 'center' });
-        doc.text('DE JAZZ DE OUIDAH 2026', 50, 12, { align: 'center' });
+        doc.text('FESTIVAL INTERNATIONAL DE JAZZ', 50, 8, { align: 'center' });
+        doc.text('DE OUIDAH 2026', 50, 12, { align: 'center' });
 
-        // Nom du participant
-        doc.setFontSize(12);
+        // Nom
+        doc.setFontSize(11);
         doc.setTextColor(245, 240, 232);
         doc.text(participantName, 50, 20, { align: 'center' });
 
@@ -1566,17 +1561,17 @@ async function handleInscription(e, type) {
         // QR Code
         doc.addImage(qrImage, 'PNG', 35, 28, 30, 30);
 
-        // Code d'invitation
+        // Code
         doc.setFont('courier', 'bold');
         doc.setFontSize(7);
         doc.setTextColor(245, 240, 232);
         doc.text(invitationCode, 50, 57, { align: 'center' });
 
-        // 7. Télécharger le PDF
+        // 6. Télécharger
         const fileName = `Carte_${participantName.replace(/\s+/g, '_')}_${invitationCode}.pdf`;
         doc.save(fileName);
 
-        // 8. Afficher le modal de succès
+        // 7. Modal de succès
         document.getElementById('modalCode').textContent = invitationCode;
         document.getElementById('modalMessage').textContent =
             type === 'artiste'
@@ -1586,8 +1581,8 @@ async function handleInscription(e, type) {
         form.reset();
 
     } catch (error) {
-        console.error('Erreur:', error);
-        alert('Une erreur est survenue. Veuillez réessayer.');
+        console.error('Erreur détaillée:', error);
+        alert('Erreur: ' + error.message);
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnText;
